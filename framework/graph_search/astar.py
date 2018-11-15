@@ -42,14 +42,17 @@ class AStar(BestFirstSearch):
         Should calculate and return the f-score of the given node.
         This score is used as a priority of this node in the open priority queue.
 
-        TODO: implement this method.
-        Remember: In Weighted-A* the f-score is defined by ((1-w) * cost) + (w * h(state)).
+        TODO: implement this method. Done!
+        Remember: In Weighted-Aopen* the f-score is defined by ((1-w) * cost) + (w * h(state)).
         Notice: You may use `search_node.cost`, `self.heuristic_weight`, and `self.heuristic_function`.
         """
 
-        raise NotImplemented()  # TODO: remove!
+        g = search_node.cost
+        h = self.heuristic_function.estimate(search_node.state)
+        return (1 - self.heuristic_weight) * g + self.heuristic_weight * h
 
-    def _open_successor_node(self, problem: GraphProblem, successor_node: SearchNode):
+
+def _open_successor_node(self, problem: GraphProblem, successor_node: SearchNode):
         """
         Called by solve_problem() in the implementation of `BestFirstSearch`
          whenever creating a new successor node.
@@ -67,5 +70,18 @@ class AStar(BestFirstSearch):
                   but still could be improved.
         """
 
-        raise NotImplemented()  # TODO: remove!
+        if self.open.has_state(successor_node.state):
+            already_found_node_with_same_state = self.open.get_node_by_state(successor_node.state)
+            if already_found_node_with_same_state.cost > successor_node.cost:
+                self.open.extract_node(already_found_node_with_same_state)
+                self.open.push_node(successor_node)
+
+        elif self.close.has_state(successor_node.state):
+            already_found_node_with_same_state = self.close.get_node_by_state(successor_node.state)
+            if already_found_node_with_same_state.cost > successor_node.cost:
+                self.close.extract_node(already_found_node_with_same_state)
+                self.open.push_node(successor_node)
+
+        else:
+            self.open.push_node(successor_node)
 
