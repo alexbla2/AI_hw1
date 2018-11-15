@@ -51,8 +51,7 @@ class AStar(BestFirstSearch):
         h = self.heuristic_function.estimate(search_node.state)
         return (1 - self.heuristic_weight) * g + self.heuristic_weight * h
 
-
-def _open_successor_node(self, problem: GraphProblem, successor_node: SearchNode):
+    def _open_successor_node(self, problem: GraphProblem, successor_node: SearchNode):
         """
         Called by solve_problem() in the implementation of `BestFirstSearch`
          whenever creating a new successor node.
