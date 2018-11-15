@@ -28,7 +28,7 @@ def plot_distance_and_expanded_wrt_weight_figure(
 
     fig, ax1 = plt.subplots()
 
-    # TODO: Plot the total distances with ax1. Use `ax1.plot(...)`.
+    # TODO: Plot the total distances with ax1. Use `ax1.plot(..)`.
     # TODO: Make this curve colored blue with solid line style.
     # See documentation here:
     # https://matplotlib.org/2.0.0/api/_as_gen/matplotlib.axes.Axes.plot.html
