@@ -20,8 +20,14 @@ class MaxAirDistHeuristic(HeuristicFunction):
         """
         assert isinstance(self.problem, RelaxedDeliveriesProblem)
         assert isinstance(state, RelaxedDeliveriesState)
+        max_len=0
+        state_junction = state.current_location
+        for waiting_delivery in self.problem.drop_points.difference(state.dropped_so_far): #find the places we still need to visit
+            current_len = state_junction.calc_air_distance_from(waiting_delivery)
+            max_len=current_len if current_len > max_len else max_len
 
-        raise NotImplemented()  # TODO: remove!
+        #raise NotImplemented()  # TODO: remove!
+        return max_len
 
 
 class MSTAirDistHeuristic(HeuristicFunction):

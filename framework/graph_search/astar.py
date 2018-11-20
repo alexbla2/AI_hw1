@@ -49,7 +49,7 @@ class AStar(BestFirstSearch):
 
         g = search_node.cost
         h = self.heuristic_function.estimate(search_node.state)
-        return (1 - self.heuristic_weight) * g + self.heuristic_weight * h
+        return (1 - self.heuristic_weight) * g + (self.heuristic_weight * h)
 
     def _open_successor_node(self, problem: GraphProblem, successor_node: SearchNode):
         """
@@ -78,7 +78,7 @@ class AStar(BestFirstSearch):
         elif self.close.has_state(successor_node.state):
             already_found_node_with_same_state = self.close.get_node_by_state(successor_node.state)
             if already_found_node_with_same_state.cost > successor_node.cost:
-                self.close.extract_node(already_found_node_with_same_state)
+                self.close.remove_node(already_found_node_with_same_state)
                 self.open.push_node(successor_node)
 
         else:

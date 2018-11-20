@@ -11,7 +11,6 @@ roads = load_map_from_csv(Consts.get_data_file_path("tlv.csv"))
 # Make `np.random` behave deterministic.
 Consts.set_seed()
 
-
 # --------------------------------------------------------------------
 # -------------------------- Map Problem -----------------------------
 # --------------------------------------------------------------------
@@ -28,12 +27,13 @@ def plot_distance_and_expanded_wrt_weight_figure(
 
     fig, ax1 = plt.subplots()
 
-    # TODO: Plot the total distances with ax1. Use `ax1.plot(..)`.
+    # TODO: Plot the total distances with ax1. Use `ax1.plot(...)`.
     # TODO: Make this curve colored blue with solid line style.
     # See documentation here:
     # https://matplotlib.org/2.0.0/api/_as_gen/matplotlib.axes.Axes.plot.html
     # You can also search google for additional examples.
-    raise NotImplemented()
+    #raise NotImplemented()
+    ax1.plot(weights, total_distance,'b-')
 
     # ax1: Make the y-axis label, ticks and tick labels match the line color.
     ax1.set_ylabel('distance traveled', color='b')
@@ -46,7 +46,10 @@ def plot_distance_and_expanded_wrt_weight_figure(
     # TODO: Plot the total expanded with ax2. Use `ax2.plot(...)`.
     # TODO: ax2: Make the y-axis label, ticks and tick labels match the line color.
     # TODO: Make this curve colored red with solid line style.
-    raise NotImplemented()
+    #raise NotImplemented()
+    ax2.plot(weights, total_expanded, 'r-')
+    ax2.set_ylabel('states expanded', color='r')
+    ax2.tick_params('y', colors='r')
 
     fig.tight_layout()
     plt.show()
@@ -64,7 +67,18 @@ def run_astar_for_weights_in_range(heuristic_type: HeuristicFunctionType, proble
     #    the #expanded.
     # Call the function `plot_distance_and_expanded_by_weight_figure()`
     #  with that data.
-    raise NotImplemented()  # TODO: remove!
+    #raise NotImplemented()  # TODO: remove!
+
+    list_of_range = np.linspace(0.5, 1, 20)
+    list_of_costs = []
+    list_of_expanded = []
+    for weight in list_of_range:
+        astar = AStar(heuristic_type, weight)
+        res = astar.solve_problem(problem)
+        list_of_costs.append(res.final_search_node.cost)
+        list_of_expanded.append(res.nr_expanded_states)
+
+    plot_distance_and_expanded_wrt_weight_figure(list_of_range, list_of_costs, list_of_expanded)
 
 
 def map_problem():
@@ -78,16 +92,22 @@ def map_problem():
     print(res)
 
     # Ex.10
-    # TODO: create an instance of `AStar` with the `NullHeuristic`,
+    # TODO: create an instance of `AStar` with the `NullHeuristic`, done!
     #       solve the same `map_prob` with it and print the results (as before).
     # Notice: AStar constructor receives the heuristic *type* (ex: `MyHeuristicClass`),
     #         and not an instance of the heuristic (eg: not `MyHeuristicClass()`).
-    exit()  # TODO: remove!
+    astar = AStar(NullHeuristic)
+    res = astar.solve_problem(map_prob)
+    print(res)
+    #exit()  # TODO: remove!
 
     # Ex.11
-    # TODO: create an instance of `AStar` with the `AirDistHeuristic`,
+    # TODO: create an instance of `AStar` with the `AirDistHeuristic`, done!
     #       solve the same `map_prob` with it and print the results (as before).
-    exit()  # TODO: remove!
+    astar = AStar(AirDistHeuristic)
+    res = astar.solve_problem(map_prob)
+    print(res)
+    #exit()  # TODO: remove!
 
     # Ex.12
     # TODO:
@@ -97,8 +117,9 @@ def map_problem():
     #    `plot_distance_and_expanded_by_weight_figure()`
     #    (upper in this file).
     # 3. Call here the function `run_astar_for_weights_in_range()`
-    #    with `AirDistHeuristic` and `map_prob`.
-    exit()  # TODO: remove!
+    #     #    with `AirDistHeuristic` and `map_prob`.
+    #exit()  # TODO: remove!
+    run_astar_for_weights_in_range(AirDistHeuristic, map_prob)
 
 
 # --------------------------------------------------------------------
@@ -116,7 +137,11 @@ def relaxed_deliveries_problem():
     # Ex.16
     # TODO: create an instance of `AStar` with the `MaxAirDistHeuristic`,
     #       solve the `big_deliveries_prob` with it and print the results (as before).
-    exit()  # TODO: remove!
+    #exit()  # TODO: remove!
+
+    astar = AStar(MaxAirDistHeuristic)
+    res = astar.solve_problem(big_deliveries_prob)
+    print(res)
 
     # Ex.17
     # TODO: create an instance of `AStar` with the `MSTAirDistHeuristic`,

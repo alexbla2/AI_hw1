@@ -39,7 +39,16 @@ class RelaxedDeliveriesState(GraphProblemState):
         TODO: implement this method!
         Notice: Never compare floats using `==` operator! Use `fuel_as_int` instead of `fuel`.
         """
-        raise NotImplemented()  # TODO: remove!
+        if not self.current_location == other.current_location:
+            return False
+        if not self.dropped_so_far == other.dropped_so_far:
+            return False
+        if not self.fuel_as_int() == other.fuel_as_int():
+            return False
+
+        return True
+
+        #raise NotImplemented()  # TODO: remove!
 
     def __hash__(self):
         """
@@ -53,7 +62,9 @@ class RelaxedDeliveriesState(GraphProblemState):
                 Otherwise the upper requirement would not met.
                 In our case, use `fuel_as_int`.
         """
-        raise NotImplemented()  # TODO: remove!
+        return hash((self.current_location.index, self.dropped_so_far.__hash__(), self.fuel_as_int))
+
+        #raise NotImplemented()  # TODO: remove!
 
     def __str__(self):
         """
@@ -92,8 +103,21 @@ class RelaxedDeliveriesProblem(GraphProblem):
         For each successor, a pair of the successor state and the operator cost is yielded.
         """
         assert isinstance(state_to_expand, RelaxedDeliveriesState)
+        junction = state_to_expand.current_location
 
-        raise NotImplemented()  # TODO: remove!
+        for link in junction.links:
+
+            ##WE GOT A PROBLEM HERE##
+
+            #here we apply the OPERATORS group on the successor states we discover.
+            successor_state = RelaxedDeliveriesState(link.target, state_to_expand.dropped_so_far.difference(link.target),
+                                                     state_to_expand.fuel) #FIX! need to change fuel parameters accord.
+            successor_state_junction = successor_state.current_location
+            operator_cost = junction.calc_air_distance_from(successor_state_junction)
+            if operator_cost < state_to_expand.fuel: #maybe we need to compare diffrently? TODO
+                yield successor_state,operator_cost
+
+        #raise NotImplemented()  # TODO: remove!
 
     def is_goal(self, state: GraphProblemState) -> bool:
         """
@@ -101,8 +125,8 @@ class RelaxedDeliveriesProblem(GraphProblem):
         TODO: implement this method!
         """
         assert isinstance(state, RelaxedDeliveriesState)
-
-        raise NotImplemented()  # TODO: remove!
+        return state.dropped_so_far == self.drop_points #TODO what about fuel =0 ?
+        #raise NotImplemented()  # TODO: remove!
 
     def solution_additional_str(self, result: 'SearchResult') -> str:
         """This method is used to enhance the printing method of a found solution."""
