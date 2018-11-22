@@ -23,6 +23,11 @@ Map(src: 54 dst: 549)                 A* (h=AirDist, w=0.500)       time:   0.19
 
 
 Solve the relaxed deliveries problem.
+
 RelaxedDeliveries(big_delivery)       A* (h=MaxAirDist, w=0.500)    time:   9.67   #dev: 7425    total_cost: 36946.94056   |path|: 19    path: [33919, 5862, 91356, 31
 008, 88216, 7016, 87835, 26690, 7016, 87835, 18409, 77726, 31221, 94941, 47823, 72189, 60664, 84034, 63050]   gas-stations: [5862, 91356, 88216, 7016, 87835, 7016, 87
 835, 31221, 47823, 72189]
+
+
+RelaxedDeliveries(big_delivery)       A* (h=MSTAirDist, w=0.500)    time:  18.40   #dev: 2018    total_cost: 35571.69593   |path|: 15    path: [33919, 57764, 63050, 2
+6690, 7016, 87835, 18409, 77726, 31221, 59666, 60664, 84034, 69732, 94941, 31008]   gas-stations: [57764, 7016, 87835, 31221, 59666, 69732]

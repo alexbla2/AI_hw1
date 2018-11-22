@@ -126,8 +126,7 @@ class RelaxedDeliveriesProblem(GraphProblem):
         TODO: implement this method!
         """
         assert isinstance(state, RelaxedDeliveriesState)
-        return state.dropped_so_far == self.drop_points #TODO what about fuel =0 ?
-        #raise NotImplemented()  # TODO: remove!
+        return state.dropped_so_far == self.drop_points #we dropped all the deliveries! yay!
 
     def solution_additional_str(self, result: 'SearchResult') -> str:
         """This method is used to enhance the printing method of a found solution."""
