@@ -43,7 +43,7 @@ class RelaxedDeliveriesState(GraphProblemState):
             return False
         if not self.dropped_so_far == other.dropped_so_far:
             return False
-        if not self.fuel_as_int() == other.fuel_as_int():
+        if not self.fuel_as_int == other.fuel_as_int:
             return False
 
         return True
@@ -103,19 +103,20 @@ class RelaxedDeliveriesProblem(GraphProblem):
         For each successor, a pair of the successor state and the operator cost is yielded.
         """
         assert isinstance(state_to_expand, RelaxedDeliveriesState)
-        junction = state_to_expand.current_location
 
-        for link in junction.links:
-
-            ##WE GOT A PROBLEM HERE##
-
-            #here we apply the OPERATORS group on the successor states we discover.
-            successor_state = RelaxedDeliveriesState(link.target, state_to_expand.dropped_so_far.difference(link.target),
-                                                     state_to_expand.fuel) #FIX! need to change fuel parameters accord.
-            successor_state_junction = successor_state.current_location
-            operator_cost = junction.calc_air_distance_from(successor_state_junction)
-            if operator_cost < state_to_expand.fuel: #maybe we need to compare diffrently? TODO
-                yield successor_state,operator_cost
+        curr_junction = state_to_expand.current_location
+        possible_waiting_orders = self.drop_points - state_to_expand.dropped_so_far
+        for succ_junction in self.possible_stop_points:
+            operator_cost = state_to_expand.fuel - curr_junction.calc_air_distance_from(succ_junction)
+            if(operator_cost < 0 or succ_junction in state_to_expand.dropped_so_far):
+                continue
+            if(succ_junction in possible_waiting_orders):
+                succ_state = RelaxedDeliveriesState(succ_junction,state_to_expand.dropped_so_far | frozenset([succ_junction]),
+                                                    operator_cost)
+            else: #gas Station
+                succ_state = RelaxedDeliveriesState(succ_junction, state_to_expand.dropped_so_far ,
+                                                    self.gas_tank_capacity)
+            yield succ_state,operator_cost
 
         #raise NotImplemented()  # TODO: remove!
 
