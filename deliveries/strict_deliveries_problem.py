@@ -18,7 +18,10 @@ class StrictDeliveriesState(RelaxedDeliveriesState):
         If you believe you need to modify the state for the strict
          problem in some sense, please go ahead and do so.
     """
-    pass
+    def __init__(self, current_location: Junction,
+                 dropped_so_far: Union[Set[Junction], FrozenSet[Junction]],
+                 fuel: float):
+        super(StrictDeliveriesState, self).__init__(current_location, dropped_so_far, fuel) # TODO
 
 
 class StrictDeliveriesProblem(RelaxedDeliveriesProblem):
@@ -67,8 +70,32 @@ class StrictDeliveriesProblem(RelaxedDeliveriesProblem):
         For each successor, a pair of the successor state and the operator cost is yielded.
         """
         assert isinstance(state_to_expand, StrictDeliveriesState)
-
-        raise NotImplemented()  # TODO: remove!
+        curr_junction = state_to_expand.current_location
+        possible_waiting_orders = self.drop_points - state_to_expand.dropped_so_far
+        start_junction_id = curr_junction.index
+        for succ_junction in self.possible_stop_points:
+            target_junction_id = succ_junction.index
+            key = (start_junction_id, target_junction_id)
+            val = self._get_from_cache(key)
+            if val is None: # not in cache.
+                map_prob = MapProblem(self.roads, start_junction_id, target_junction_id)
+                res = self.inner_problem_solver.solve_problem(map_prob)
+                operator_cost = res.final_search_node.cost
+                self._insert_to_cache(key, operator_cost)
+            else:
+                operator_cost = val
+            remain_fuel = state_to_expand.fuel - operator_cost
+            if remain_fuel < 0 or succ_junction in state_to_expand.dropped_so_far:
+                continue
+            if succ_junction in possible_waiting_orders:
+                succ_state = StrictDeliveriesState(succ_junction,
+                                                    state_to_expand.dropped_so_far | frozenset([succ_junction]),
+                                                    remain_fuel)
+            else:  # gas Station
+                succ_state = StrictDeliveriesState(succ_junction, state_to_expand.dropped_so_far,
+                                                    self.gas_tank_capacity)
+            yield succ_state, operator_cost
+        # raise NotImplemented()  # TODO: remove!
 
     def is_goal(self, state: GraphProblemState) -> bool:
         """
@@ -76,5 +103,5 @@ class StrictDeliveriesProblem(RelaxedDeliveriesProblem):
         TODO: implement this method!
         """
         assert isinstance(state, StrictDeliveriesState)
-
-        raise NotImplemented()  # TODO: remove!
+        return state.dropped_so_far == self.drop_points  # we dropped all the deliveries! yay!
+        # raise NotImplemented()  # TODO: remove!
