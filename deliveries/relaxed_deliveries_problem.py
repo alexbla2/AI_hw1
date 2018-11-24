@@ -107,16 +107,17 @@ class RelaxedDeliveriesProblem(GraphProblem):
         curr_junction = state_to_expand.current_location
         possible_waiting_orders = self.drop_points - state_to_expand.dropped_so_far
         for succ_junction in self.possible_stop_points:
-            operator_cost = state_to_expand.fuel - curr_junction.calc_air_distance_from(succ_junction)
-            if(operator_cost < 0 or succ_junction in state_to_expand.dropped_so_far):
+            operator_cost = curr_junction.calc_air_distance_from(succ_junction)
+            remain_fuel = state_to_expand.fuel - curr_junction.calc_air_distance_from(succ_junction)
+            if remain_fuel < 0 or succ_junction in state_to_expand.dropped_so_far:
                 continue
-            if(succ_junction in possible_waiting_orders):
+            if succ_junction in possible_waiting_orders:
                 succ_state = RelaxedDeliveriesState(succ_junction,state_to_expand.dropped_so_far | frozenset([succ_junction]),
-                                                    operator_cost)
+                                                    remain_fuel)
             else: #gas Station
                 succ_state = RelaxedDeliveriesState(succ_junction, state_to_expand.dropped_so_far ,
                                                     self.gas_tank_capacity)
-            yield succ_state,operator_cost
+            yield succ_state, operator_cost
 
         #raise NotImplemented()  # TODO: remove!
 
