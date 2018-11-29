@@ -4,19 +4,18 @@ from matplotlib import pyplot as plt
 
 X = np.array([400, 450, 900, 390, 550])
 vector_range = 100
-T_scale_factor = 1
 
 # TODO: Write the code as explained in the instructions Done!
 # raise NotImplemented()  # TODO: remove!
 
 
-def probabilities_vector(X, T, T_scale_factor):
+def probabilities_vector(X, T):
 
     x_pow_t_dic = {}
     x_pow_t_sum_dic = {}
     for x in X:
         for t in T:
-            x_pow_t = np.power(np.divide(x, T_scale_factor), np.divide(-1, t))
+            x_pow_t = np.power(x, np.divide(-1, t))
             x_pow_t_dic[(x, t)] = x_pow_t
             if t not in x_pow_t_sum_dic:
                 x_pow_t_sum_dic[t] = x_pow_t
@@ -34,7 +33,7 @@ def probabilities_vector(X, T, T_scale_factor):
 
 def main():
     T = np.linspace(0.01, 5, vector_range)
-    p_vectors = probabilities_vector(X, T, T_scale_factor)
+    p_vectors = probabilities_vector(X, T)
 
     for i, x in enumerate(X):
         P = p_vectors[x]

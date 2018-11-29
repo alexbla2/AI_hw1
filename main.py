@@ -228,12 +228,13 @@ def strict_deliveries_problem():
     # Ex.28
     # TODO: create an instance of `AStar` with the `RelaxedDeliveriesHeuristic`,
     #       solve the `small_deliveries_strict_problem` with it and print the results (as before).
-    exit()  # TODO: remove!
-
+    astar = AStar(RelaxedDeliveriesHeuristic)
+    res = astar.solve_problem(small_deliveries_strict_problem)
+    print(res)
 
 def main():
-    # map_problem() # TODO: change
-    # relaxed_deliveries_problem() # TODO: change
+    map_problem()
+    relaxed_deliveries_problem()
     strict_deliveries_problem()
 
 
